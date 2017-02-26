@@ -64,16 +64,13 @@ export default (meteoriteData) => {
     .attr('width', svgWidth)
     .attr('height', svgHeight)
     .call(d3.zoom().on("zoom", function () {
-      console.log(d3.event.transform);
+      console.log(d3.event);
+      let transformObject = d3.event.transform;
 
-      var t = d3.event.transform;
-      var scale = d3.event.transform.k;
-      console.log(t);
-
-      t.x = Math.max(0, Math.min(t.x, svgWidth - 50));
-      t.y = Math.max(0, Math.min(t.y, svgHeight - 50));
-      t.k = scale < 1 ? 1 : scale;
-        svg.attr("transform", t);
+      // create upper zoomout bound
+      transformObject.k = (transformObject.k < 1) ? 1 : transformObject.k;
+    
+      svg.attr("transform", transformObject);
     }))
     .append('g');
 
