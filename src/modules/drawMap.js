@@ -3,7 +3,7 @@
 // https://www.youtube.com/watch?v=aNbgrqRuoiE
 
 import * as d3 from "d3";
-// import * as d3Chromatic from 'd3-scale-chromatic';
+import * as d3Chromatic from 'd3-scale-chromatic';
 
 import getJson from './getJson';
 import * as topojson from 'topojson';
@@ -25,17 +25,26 @@ const findMeteoriteMassRange = (meteoriteData) => {
   return d3.extent(massArray);
 }
 
-
-
-
 export default (meteoriteData) => {
-// const minMass = d3.min(meteoriteData.features.)
 
-  const massToRadiusScale = d3.scaleLinear()
-    .domain(findMeteoriteMassRange(meteoriteData))
+  // find range of meteorite mass
+  const meteoriteMassExtent = findMeteoriteMassRange(meteoriteData);
+
+  const massToRadiusScale = d3.scalePow()
+    .exponent(0.8)
+    .domain(meteoriteMassExtent)
     .range([1, 70]);
 
-  
+  const colorScale = d3.scalePow()
+  .exponent(.5)
+  .domain(meteoriteMassExtent)
+  .range([0,1]);
+
+  const massToColor = (mass) => {
+    return (d3Chromatic.interpolatePuRd(colorScale(mass)));
+  };
+
+
   // create svg element to hold map
   // add pan and zoom listeners
   const svg = d3.select('.map-container')
@@ -58,13 +67,6 @@ export default (meteoriteData) => {
   
   const countries = topojson.feature(geojsonMap, geojsonMap.objects.countries1).features;
 
-  function convertMassToRadius(mass) {
-    return 3
-  }
-  function convertMassToColor(mass) {
-    return '#000';
-  }
-  
   svg.selectAll('.country')
     .data(countries)
     .enter().append('path')
@@ -96,7 +98,7 @@ export default (meteoriteData) => {
       }
     })
     .attr('fill', d => {
-      return convertMassToColor(d.properties.mass);
+      return massToColor(d.properties.mass);
     })
     .attr('class', 'meteorite')
     .on('mouseover', mouseOverHandler)
