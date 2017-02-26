@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Lato|Ubuntu');
+@import url('https://fonts.googleapis.com/css?family=Raleway|Nunito+Sans');
 @import url('../../node_modules/font-awesome/css/font-awesome.min.css');
 /* Page styles */
 
 body {
-  font-family: 'Ubuntu', sans-serif;
+  font-family: 'Nunito+Sans', sans-serif;
   font-size: 16px;
 }
 
@@ -30,11 +30,10 @@ h3 {
 }
 
 .header, .footer {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 1em;
   text-align: center;
-  background-color: #444;
-  background-color: #008b7d;
+  background-color: #1c312f;
   padding: 10px;
   color: #fff;
 }
