@@ -28,13 +28,10 @@ const findMeteoriteMassRange = (meteoriteData) => {
 export default (meteoriteData) => {
   const minSvgWidth = 310;
   
-
-
   let svgWidth = window.innerWidth * 0.9;
   if (svgWidth < minSvgWidth) {
     svgWidth = minSvgWidth;
   }
-console.log(svgWidth);
 
   // upper bound of meteorite radius on screen depending on 
   // width of svg element
