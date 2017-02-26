@@ -3,6 +3,8 @@
 // https://www.youtube.com/watch?v=aNbgrqRuoiE
 
 import * as d3 from "d3";
+// import * as d3Chromatic from 'd3-scale-chromatic';
+
 import getJson from './getJson';
 import * as topojson from 'topojson';
 import mouseOverHandler from './mouseOverHandler';
@@ -14,8 +16,26 @@ import { svgWidth, svgHeight } from '../constants';
 // https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json
 import geojsonMap from './world-countries.json';
 
-export default (meteoriteData) => {
+// take meteorite json data and return the extent of mass as array
+const findMeteoriteMassRange = (meteoriteData) => {
+  const massArray = meteoriteData.features.map(meteorite => {
+    return Number(meteorite.properties.mass);
+  });
 
+  return d3.extent(massArray);
+}
+
+
+
+
+export default (meteoriteData) => {
+// const minMass = d3.min(meteoriteData.features.)
+
+  const massToRadiusScale = d3.scaleLinear()
+    .domain(findMeteoriteMassRange(meteoriteData))
+    .range([1, 70]);
+
+  
   // create svg element to hold map
   // add pan and zoom listeners
   const svg = d3.select('.map-container')
@@ -51,12 +71,17 @@ export default (meteoriteData) => {
     .attr('class', 'country')
     .attr('d', path)
 
-  const meteorites = meteoriteData.features;
+  // created an array of meteorites sorted by mass
+  // so that larger ones are drawn first and smaller ones on top
+  const meteorites = meteoriteData.features.sort((a, b) => {
+    return b.properties.mass - a.properties.mass;
+  })
+  
   svg.selectAll('.meteorite')
     .data(meteorites)
     .enter().append('circle')
     .attr('r', d => {
-      return convertMassToRadius(d.properties.mass);
+      return massToRadiusScale(d.properties.mass);
     })
     .attr('cx', d => {
       if (d.geometry) {
@@ -75,6 +100,7 @@ export default (meteoriteData) => {
     })
     .attr('class', 'meteorite')
     .on('mouseover', mouseOverHandler)
+    .on('mousemove', mouseOverHandler)
     .on('mouseout', () => { 
       d3.select('.tooltip').classed('show-tooltip', false); 
     })
