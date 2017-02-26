@@ -44,7 +44,6 @@ export default (meteoriteData) => {
     return (d3Chromatic.interpolatePuRd(colorScale(mass)));
   };
 
-
   // create svg element to hold map
   // add pan and zoom listeners
   const svg = d3.select('.map-container')
@@ -106,5 +105,4 @@ export default (meteoriteData) => {
     .on('mouseout', () => { 
       d3.select('.tooltip').classed('show-tooltip', false); 
     })
-    
   }
