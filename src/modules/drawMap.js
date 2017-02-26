@@ -1,6 +1,11 @@
+// attribution:
+// Map drawing function was created with the help of a youtube tutorial found here:
+// https://www.youtube.com/watch?v=aNbgrqRuoiE
+
 import * as d3 from "d3";
 import getJson from './getJson';
 import * as topojson from 'topojson';
+import mouseOverHandler from './mouseOverHandler';
 
 
 import { svgWidth, svgHeight } from '../constants';
@@ -9,27 +14,31 @@ import { svgWidth, svgHeight } from '../constants';
 // https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json
 import geojsonMap from './world-countries.json';
 
-export default (data) => {
+
+export default (meteoriteData) => {
 
   // create svg element
 
   const svg = d3.select('.map-container')
     .append('svg')
     .attr('width', svgWidth)
-    .attr('height', svgHeight);
+    .attr('height', svgHeight)
+    .call(d3.zoom().on("zoom", function () {
+        console.log(d3.event.transform);
+        svg.attr("transform", d3.event.transform)
+    }))
+    .append('g');
 
   var projection = d3.geoMercator()
-    .scale(svgWidth / 2 / Math.PI)
-    //.scale(100)
+    // .scale(svgWidth / 2 / Math.PI)
+    .scale(150)
     .translate([svgWidth / 2, svgHeight / 2])
 
   var path = d3.geoPath()
     .projection(projection);
   
-  console.log(geojsonMap);
   var countries = topojson.feature(geojsonMap, geojsonMap.objects.countries1).features;
 
-  console.log(countries);
   
   svg.selectAll('.country')
     .data(countries)
@@ -37,37 +46,26 @@ export default (data) => {
     .attr('class', 'country')
     .attr('d', path)
 
-  // const meteorites = d3.select('.map-container')
-
-  // const projection = d3. geoMercator()
-  //   .scale(200)
-  //   .translate([svgWidth / 2, svgHeight / 2]);
-
-  // const path = d3.geoPath()
-  //   .projection(projection);
-
-  // d3.json("world-map.json", function(err, mapData) {
-  //     if (err) {
-  //       throw new Error('Problem retrieving map data')
-  //     } else {
-  //       svg.append("path")
-  //         .attr("d", path(mapData));
-
-          
-  //     }
-  //   })
-  console.log();
-
-
-
-  // d3.json(JSON.stringify(map), function(error, topology) {
-  //   g.selectAll("path")
-  //     .data(topojson.object(topology, topology.objects.countries)
-  //         .geometries)
-  //   .enter()
-  //     .append("path")
-  //     .attr("d", path);
-
-  //   });
- 
+  const meteorites = meteoriteData.features;
+  svg.selectAll('.meteorite')
+    .data(meteorites)
+    .enter().append('circle')
+    .attr('r', 2)
+    .attr('cx', d => {
+      if (d.geometry) {
+        var coords = projection([d.geometry.coordinates[0], d.geometry.coordinates[1]])
+        return coords[0];
+      }
+    })
+    .attr('cy', d => {
+      if (d.geometry) {
+        var coords = projection([d.geometry.coordinates[0], d.geometry.coordinates[1]])
+        return coords[1];
+      }
+    })
+    .on('mouseover', mouseOverHandler)
+    .on('mouseout', () => { 
+      d3.select('.tooltip').classed('show-tooltip', false); 
+    })
+    
   }

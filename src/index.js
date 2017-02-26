@@ -1,9 +1,11 @@
 import * as d3 from "d3";
 // import debounce from 'lodash.debounce';
-import getJson from './modules/getJson';
+// import getJson from './modules/getJson';
 import drawMap from './modules/drawMap';
 // import getSvgWidth from './modules/getSvgWidth';
 // import { svgWidthPercent } from './constants';
+
+import createTooltip from './modules/createTooltip';
 
 // import main page styles
 import './styles/styles.css';
@@ -21,17 +23,10 @@ d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
         throw new Error('problem retrieving json data');
       } else {
         drawMap(dataset);
-        // console.log(dataset);
+        console.log(dataset);
       }
     })
 
-// const resolvePromise = () => {
-//   promisedData
-//   .then((dataset) => {
-//     drawMap(dataset);
-//     console.log(dataset);
-//   })
-//   .catch(error => console.log(error));
-// };
-
-// resolvePromise();
+window.onload = () => {
+  createTooltip();
+}

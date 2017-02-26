@@ -1,3 +1,7 @@
 .map-container svg {
-  /*background-color: yellow;*/
+  background-color: #beffff;
+}
+
+.country {
+  fill: #666;
 }
