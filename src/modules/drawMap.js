@@ -23,7 +23,7 @@ const findMeteoriteMassRange = (meteoriteData) => {
   });
 
   return d3.extent(massArray);
-}
+};
 
 export default (meteoriteData) => {
   const minSvgWidth = 310;
@@ -32,6 +32,7 @@ export default (meteoriteData) => {
   if (svgWidth < minSvgWidth) {
     svgWidth = minSvgWidth;
   }
+  const svgHeight = svgWidth;
 
   // upper bound of meteorite radius on screen depending on 
   // width of svg element
@@ -46,7 +47,7 @@ export default (meteoriteData) => {
     .range([1, maxCircleRadius]);
 
   const colorScale = d3.scalePow()
-  .exponent(.5)
+  .exponent(0.5)
   .domain(meteoriteMassExtent)
   .range([0,1]);
 
@@ -56,12 +57,23 @@ export default (meteoriteData) => {
 
   // create svg element to hold map
   // add pan and zoom listeners
+
+
   const svg = d3.select('.map-container')
     .append('svg')
     .attr('width', svgWidth)
     .attr('height', svgHeight)
     .call(d3.zoom().on("zoom", function () {
-        svg.attr("transform", d3.event.transform)
+      console.log(d3.event.transform);
+
+      var t = d3.event.transform;
+      var scale = d3.event.transform.k;
+      console.log(t);
+
+      t.x = Math.max(0, Math.min(t.x, svgWidth - 50));
+      t.y = Math.max(0, Math.min(t.y, svgHeight - 50));
+      t.k = scale < 1 ? 1 : scale;
+        svg.attr("transform", t);
     }))
     .append('g');
 
@@ -69,7 +81,7 @@ export default (meteoriteData) => {
     // scale map based on width of svg
     .scale(svgWidth / 2 / Math.PI)
     // .scale(150)
-    .translate([svgWidth / 2, svgHeight / 2])
+    .translate([svgWidth / 2, svgHeight / 2]);
 
   const path = d3.geoPath()
     .projection(projection);
@@ -80,13 +92,13 @@ export default (meteoriteData) => {
     .data(countries)
     .enter().append('path')
     .attr('class', 'country')
-    .attr('d', path)
+    .attr('d', path);
 
   // created an array of meteorites sorted by mass
   // so that larger ones are drawn first and smaller ones on top
   const meteorites = meteoriteData.features.sort((a, b) => {
     return b.properties.mass - a.properties.mass;
-  })
+  });
   
   svg.selectAll('.meteorite')
     .data(meteorites)
@@ -96,13 +108,13 @@ export default (meteoriteData) => {
     })
     .attr('cx', d => {
       if (d.geometry) {
-        var coords = projection([d.geometry.coordinates[0], d.geometry.coordinates[1]])
+        var coords = projection([d.geometry.coordinates[0], d.geometry.coordinates[1]]);
         return coords[0];
       }
     })
     .attr('cy', d => {
       if (d.geometry) {
-        var coords = projection([d.geometry.coordinates[0], d.geometry.coordinates[1]])
+        var coords = projection([d.geometry.coordinates[0], d.geometry.coordinates[1]]);
         return coords[1];
       }
     })
@@ -114,5 +126,5 @@ export default (meteoriteData) => {
     .on('mousemove', mouseOverHandler)
     .on('mouseout', () => { 
       d3.select('.tooltip').classed('show-tooltip', false); 
-    })
-  }
+    });
+};

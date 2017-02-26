@@ -21,7 +21,7 @@ d3.json(url, function(err, dataset) {
         globalDataset = dataset;
         drawMap(dataset);
       }
-    })
+    });
 
 window.onload = () => {
   createTooltip();
@@ -41,4 +41,4 @@ window.onload = () => {
   window.addEventListener('resize', function(event) {
       deboucedResizeGraph();
   });
-}
+};
