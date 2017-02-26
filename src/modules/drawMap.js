@@ -26,6 +26,19 @@ const findMeteoriteMassRange = (meteoriteData) => {
 }
 
 export default (meteoriteData) => {
+  const minSvgWidth = 310;
+  
+
+
+  let svgWidth = window.innerWidth * 0.9;
+  if (svgWidth < minSvgWidth) {
+    svgWidth = minSvgWidth;
+  }
+console.log(svgWidth);
+
+  // upper bound of meteorite radius on screen depending on 
+  // width of svg element
+  const maxCircleRadius = svgWidth / 10;
 
   // find range of meteorite mass
   const meteoriteMassExtent = findMeteoriteMassRange(meteoriteData);
@@ -33,7 +46,7 @@ export default (meteoriteData) => {
   const massToRadiusScale = d3.scalePow()
     .exponent(0.8)
     .domain(meteoriteMassExtent)
-    .range([1, 70]);
+    .range([1, maxCircleRadius]);
 
   const colorScale = d3.scalePow()
   .exponent(.5)

@@ -1,5 +1,7 @@
 .map-container svg {
   background-color: #beffff;
+  display: block;
+  margin: 0 auto;
 }
 
 .country {
