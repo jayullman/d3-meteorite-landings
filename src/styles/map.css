@@ -5,3 +5,7 @@
 .country {
   fill: #666;
 }
+
+.meteorite {
+  opacity: 0.5;
+}

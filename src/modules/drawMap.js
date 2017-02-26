@@ -7,38 +7,43 @@ import getJson from './getJson';
 import * as topojson from 'topojson';
 import mouseOverHandler from './mouseOverHandler';
 
-
+import '../styles/map.css';
 import { svgWidth, svgHeight } from '../constants';
 
 // geojson map generated from:
 // https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json
 import geojsonMap from './world-countries.json';
 
-
 export default (meteoriteData) => {
 
-  // create svg element
-
+  // create svg element to hold map
+  // add pan and zoom listeners
   const svg = d3.select('.map-container')
     .append('svg')
     .attr('width', svgWidth)
     .attr('height', svgHeight)
     .call(d3.zoom().on("zoom", function () {
-        console.log(d3.event.transform);
         svg.attr("transform", d3.event.transform)
     }))
     .append('g');
 
-  var projection = d3.geoMercator()
-    // .scale(svgWidth / 2 / Math.PI)
-    .scale(150)
+  const projection = d3.geoMercator()
+    // scale map based on width of svg
+    .scale(svgWidth / 2 / Math.PI)
+    // .scale(150)
     .translate([svgWidth / 2, svgHeight / 2])
 
-  var path = d3.geoPath()
+  const path = d3.geoPath()
     .projection(projection);
   
-  var countries = topojson.feature(geojsonMap, geojsonMap.objects.countries1).features;
+  const countries = topojson.feature(geojsonMap, geojsonMap.objects.countries1).features;
 
+  function convertMassToRadius(mass) {
+    return 3
+  }
+  function convertMassToColor(mass) {
+    return '#000';
+  }
   
   svg.selectAll('.country')
     .data(countries)
@@ -50,7 +55,9 @@ export default (meteoriteData) => {
   svg.selectAll('.meteorite')
     .data(meteorites)
     .enter().append('circle')
-    .attr('r', 2)
+    .attr('r', d => {
+      return convertMassToRadius(d.properties.mass);
+    })
     .attr('cx', d => {
       if (d.geometry) {
         var coords = projection([d.geometry.coordinates[0], d.geometry.coordinates[1]])
@@ -63,6 +70,10 @@ export default (meteoriteData) => {
         return coords[1];
       }
     })
+    .attr('fill', d => {
+      return convertMassToColor(d.properties.mass);
+    })
+    .attr('class', 'meteorite')
     .on('mouseover', mouseOverHandler)
     .on('mouseout', () => { 
       d3.select('.tooltip').classed('show-tooltip', false); 

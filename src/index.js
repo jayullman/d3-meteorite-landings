@@ -8,7 +8,7 @@ import drawMap from './modules/drawMap';
 import createTooltip from './modules/createTooltip';
 
 // import main page styles
-import './styles/styles.css';
+import './styles/page-styles.css';
 
 const url = 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/meteorite-strike-data.json';
 
@@ -18,7 +18,7 @@ var dataset = [];
 // dataset is a promise for the requested json dataset
 // let promisedData = getJson(url);
 
-d3.json('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/meteorite-strike-data.json', function(err, dataset) {
+d3.json(url, function(err, dataset) {
       if (err) {
         throw new Error('problem retrieving json data');
       } else {
