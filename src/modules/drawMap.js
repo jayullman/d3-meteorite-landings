@@ -4,13 +4,10 @@
 
 import * as d3 from "d3";
 import * as d3Chromatic from 'd3-scale-chromatic';
-
-import getJson from './getJson';
 import * as topojson from 'topojson';
 import mouseOverHandler from './mouseOverHandler';
 
 import '../styles/map.css';
-import { svgWidth, svgHeight } from '../constants';
 
 // geojson map generated from:
 // https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json
@@ -49,16 +46,14 @@ export default (meteoriteData) => {
   const colorScale = d3.scalePow()
   .exponent(0.5)
   .domain(meteoriteMassExtent)
-  .range([0,1]);
+  .range([1, 0]);
 
   const massToColor = (mass) => {
-    return (d3Chromatic.interpolatePuRd(colorScale(mass)));
+    return (d3Chromatic.interpolateSpectral(colorScale(mass)));
   };
 
   // create svg element to hold map
   // add pan and zoom listeners
-
-
   const svg = d3.select('.map-container')
     .append('svg')
     .attr('width', svgWidth)

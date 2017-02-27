@@ -16,9 +16,6 @@ export default (d) => {
       `Fall: ${d.properties.fall} <br>
        Name: ${d.properties.name} <br>
        Year: ${new Date(d.properties.year).getFullYear()} <br>
-       Mass: ${d.properties.mass}
-       `
-       
-       
+       Mass: ${d.properties.mass}`
     );
 };
