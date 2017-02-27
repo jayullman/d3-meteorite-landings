@@ -28,7 +28,7 @@ const findMeteoriteMassRange = (meteoriteData) => {
 export default (meteoriteData) => {
   const minSvgWidth = 310;
   
-  let svgWidth = window.innerWidth * 0.9;
+  let svgWidth = window.innerWidth * 0.75;
   if (svgWidth < minSvgWidth) {
     svgWidth = minSvgWidth;
   }
@@ -64,13 +64,14 @@ export default (meteoriteData) => {
     .attr('width', svgWidth)
     .attr('height', svgHeight)
     .call(d3.zoom().on("zoom", function () {
-      console.log(d3.event);
       let transformObject = d3.event.transform;
-
       // create upper zoomout bound
       transformObject.k = (transformObject.k < 1) ? 1 : transformObject.k;
-    
-      svg.attr("transform", transformObject);
+      
+      // enable zoom/pan behavior only on non-touch screens
+      if (!('ontouchstart' in document.documentElement)) {
+        svg.attr("transform", transformObject);
+      }
     }))
     .append('g');
 

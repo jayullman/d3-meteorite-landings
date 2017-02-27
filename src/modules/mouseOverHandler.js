@@ -6,7 +6,7 @@ import * as d3 from "d3";
 
 export default (d) => {
   d3.select('.tooltip')
-    .attr('style', 'left: ' + (d3.event.pageX) +
+    .attr('style', 'left: ' + (d3.event.pageX- 50) +
       'px; top:  ' + (d3.event.pageY + 30) + 'px;')
     .classed('show-tooltip', true);
   

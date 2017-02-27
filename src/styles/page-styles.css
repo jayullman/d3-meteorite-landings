@@ -113,4 +113,8 @@ li {
   .about-section a:hover {
     color: #fff;
   }
+  .header a:hover,
+  .footer a:hover {
+    color: #aaa;
+  }
 }
